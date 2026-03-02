@@ -1,7 +1,8 @@
-'use client'; 
+'use client';
 import { clearToken, getToken } from '@/lib/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+
 
 function NavLink({ href, children }) {
   const pathname = usePathname();
@@ -29,7 +30,7 @@ export default function Navbar() {
   return (
     <header className='border-b bg-white'>
       <div className='container mx-auto flex items-center justify-between py-4 px-4'>
-        <Link href="/" className='text-xl font-bold text-slate-900'>Dulce Sensacion</Link>
+        <Link href="/" className='text-xl font-bold text-slate-900'>Dulce Sensación</Link>
         <nav className='flex items-center gap-2'>
           <NavLink href="/">Inicio</NavLink>
           <NavLink href="/productos">Productos</NavLink>
