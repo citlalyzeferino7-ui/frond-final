@@ -1,30 +1,25 @@
-export const API = 'http://localhost:3001';
-
-export function getToken() {
-  return localStorage.getItem('token');
-}
-
-export function clearToken() {
-  localStorage.removeItem('token');
-}
+import { API } from '@/config';
 
 export async function apiFetch(path, options = {}) {
-  const token = getToken();
-  const headers = { ...(options.headers || {}) };
+  const token = typeof window !== 'undefined'
+    ? localStorage.getItem('token')
+    : null;
 
-  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
-    headers['Content-Type'] = 'application/json';
-  }
-
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  const res = await fetch(`${API}${path}`, { ...options, headers });
-  const data = await res.json().catch(() => null);
+  const res = await fetch(`${API}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {})
+    }
+  });
 
   if (!res.ok) {
-    const err = new Error(data?.error || `Error HTTP ${res.status}`);
+    const error = await res.json().catch(() => ({}));
+    const err = new Error(error.error || 'Error');
     err.status = res.status;
     throw err;
   }
-  return data;
+
+  return res.json();
 }
